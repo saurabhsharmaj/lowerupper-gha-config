@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-lower-upper-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: java-lower-upper
+  template:
+    metadata:
+      labels:
+        app: java-lower-upper
+    spec:
+      containers:
+        - name: lower-upper
+          image: 192.168.1.39:8083/docker-hosted/lowerupper:latest
+          ports:
+            - containerPort: 8084
+      imagePullSecrets:
+        - name: regcred
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-lower-upper
+spec:
+  selector:
+    app: java-lower-upper
+  type: NodePort  
+  ports:
+    - protocol: TCP
+      targetPort: 8084
+      port: 8084
+      nodePort: 30001
